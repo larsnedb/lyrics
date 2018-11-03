@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        File file = new File("/Users/lars.nedberg/Documents/kode/sangtekster/vatten/03_elegi.txt");
+        File file = new File("/Users/lars.nedberg/Documents/kode/lyrics/vatten/03_elegi.txt");
 
         Song first = new Song("Elegi", ParseUtils.getLyricsAsSortedMap(file));
         Map<String, Long> occurrencesPerWord = first.getOccurrencesPerWord();
