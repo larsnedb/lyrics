@@ -2,31 +2,30 @@ import Domain.Album;
 import Domain.Song;
 import Utils.FileUtils;
 import Utils.ParseUtils;
+import com.sun.xml.internal.ws.server.ServerRtException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Map.*;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        String pathname = "/Users/lars.nedberg/Documents/kode/lyrics/vatten/";
-        List<File> files = FileUtils.listFilesForFolder(new File(pathname));
+        String pathname = "./resources/Vatten_under_broarna/";
+        List<File> files = FileUtils.getFilesInDirectory(pathname);
 
-        Album album = new Album(pathname);
-        album.addSongs(getSongsFromDirectory(files));
+        Album album = new Album(pathname, FileUtils.getSongsFromDirectory(files));
+        Map<String, Long> sortedTotal = ParseUtils.getAggregatedOccurencesForAlbum(album);
 
-
-        // TODO: 03/11/2018 Samle data fra alle sangene til ett enkelt map som har statistikk for hele albumet
-    }
-
-    private static List<Song> getSongsFromDirectory(List<File> files) {
-        return files.stream()
-                .map(file -> new Song(file.getName(), ParseUtils.getLyricsAsSortedMap(file)))
-                .collect(Collectors.toList());
+        System.out.println(album.getName() + "\n" +
+                sortedTotal.entrySet().stream().map(entry -> entry.getKey() + ": " + entry.getValue() + "\n")
+                .limit(10)
+                .collect(Collectors.toList()));
     }
 }

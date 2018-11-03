@@ -9,10 +9,11 @@ import java.util.List;
 public class Album {
 
     private final String name;
-    private  List<Song> songs;
+    private final List<Song> songs;
 
-    public Album(String name) {
+    public Album(String name, List<Song> songsFromDirectory) {
         this.name = name;
+        songs = new ArrayList<>(songsFromDirectory);
     }
 
     public List<Song> getSongs() {
@@ -23,18 +24,12 @@ public class Album {
         return name;
     }
 
-    public void addSong(Song song) {
-        songs.add(song);
-    }
-
-    public void addSongs(Collection<Song> newSongs) {
-        songs.addAll(newSongs);
-    }
 
     @Override
     public String toString() {
         return "Album{" +
                 "name='" + name + '\'' +
+                ", number of songs=" + songs.size() +
                 '}';
     }
 }
