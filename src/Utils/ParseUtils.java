@@ -2,10 +2,7 @@ package Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -38,14 +35,22 @@ public class ParseUtils {
 
     private static Map<String, Long> sortByValue(Map<String, Long> map) {
         return map.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue((o1, o2) -> o2.compareTo(o1)))
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    public static Map<String, Long> getLyricsAsSortedMap(File file) throws FileNotFoundException {
+    public static Map<String, Long> getLyricsAsSortedMap(File file) {
         //List<String> ordSomSkalIgnoreres = new ArrayList<>(asList("som", "ska", "och"));
-        List<String> allWords = ParseUtils.getLyricsAsWords(FileUtils.retrieveLinesFromFile(file));
+
+        List<String> allWords = null;
+        try {
+            allWords = ParseUtils.getLyricsAsWords(FileUtils.retrieveLinesFromFile(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         return ParseUtils.groupPerWordAndSort(allWords);
+
+
     }
 }

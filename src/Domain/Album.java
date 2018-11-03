@@ -1,17 +1,18 @@
 package Domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
 public class Album {
 
     private final String name;
-    private final List<Song> songs;
+    private  List<Song> songs;
 
-    public Album(String name, List<Song> songs) {
+    public Album(String name) {
         this.name = name;
-        this.songs = songs;
     }
 
     public List<Song> getSongs() {
@@ -20,5 +21,20 @@ public class Album {
 
     public String getName() {
         return name;
+    }
+
+    public void addSong(Song song) {
+        songs.add(song);
+    }
+
+    public void addSongs(Collection<Song> newSongs) {
+        songs.addAll(newSongs);
+    }
+
+    @Override
+    public String toString() {
+        return "Album{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

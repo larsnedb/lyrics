@@ -19,4 +19,11 @@ public class Song {
     public Map<String, Long> getOccurrencesPerWord() {
         return occurrencesPerWord;
     }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

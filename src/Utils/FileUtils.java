@@ -17,13 +17,12 @@ public class FileUtils {
         return bufferedReader.lines().collect(Collectors.toList());
     }
 
-    public List<String> listFilesForFolder(File folder) {
+    public static List<File> listFilesForFolder(File folder) {
         if (folder == null || folder.listFiles() == null) {
             return Collections.emptyList();
         }
         return Arrays.stream(folder.listFiles())
                 .filter(File::isFile)
-                .map(File::getPath)
                 .collect(Collectors.toList());
     }
 
