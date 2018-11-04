@@ -1,29 +1,26 @@
 package Utils;
 
-import Domain.Album;
+import Domain.Song;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class ParseUtils {
 
-    private static List<String> getLyricsAsWords(List<String> alleLinjer) {
-        List<String> linesWithContents = removeEmptyLines(alleLinjer);
-        return transformToLowerCase(linesWithContents);
-    }
-
-    private static List<String> removeEmptyLines(List<String> allLines) {
-        return allLines.stream()
-                .filter(line -> !line.isEmpty())
+    public static List<Song> mapFilesToSongs(List<SongFile> songFiles) {
+        return songFiles.stream()
+                .map(songFile -> new Song(songFile.getName(), getSongLyrics(songFile.getWords())))
                 .collect(Collectors.toList());
     }
 
-    private static List<String> transformToLowerCase(List<String> linjer) {
-        return linjer.stream()
-                .map(linje -> linje.split(" "))
+    private static Map<String, Long> getSongLyrics(List<String> lines) {
+        return groupPerWordAndSort(transformLinesToWords(lines));
+    }
+    
+    private static List<String> transformLinesToWords(List<String> lines) {
+        return lines.stream()
+                .filter(line -> !line.isEmpty())
+                .map(line -> line.split(" "))
                 .flatMap(Arrays::stream)
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
@@ -42,21 +39,11 @@ public class ParseUtils {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    static Map<String, Long> getLyricsAsSortedMap(File file) {
-        List<String> allWords = null;
-        try {
-            allWords = ParseUtils.getLyricsAsWords(FileUtils.retrieveLinesFromFile(file));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return ParseUtils.groupPerWordAndSort(allWords);
-    }
-
-    public static Map<String, Long> getAggregatedOccurencesForAlbum(Album album) {
+    public static Map<String, Long> getAggregatedOccurencesForAlbum(List<Song> songs) {
         HashMap<String, Long> total = new HashMap<>();
-        album.getSongs().forEach(song -> {
+        songs.forEach(song -> {
             Map<String, Long> occurrencesPerWord = song.getOccurrencesPerWord();
-            occurrencesPerWord.forEach((k, v) -> total.merge(k, v, (aLong, aLong2) -> aLong + aLong2));
+            occurrencesPerWord.forEach((k, v) -> total.merge(k, v, (first, second) -> first + second));
         });
         return sortByValue(total);
     }
